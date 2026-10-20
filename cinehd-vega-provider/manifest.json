@@ -1,0 +1,11 @@
+[
+  {
+    "display_name": "CineHD",
+    "value": "cinehd",
+    "version": "0.2.0",
+    "icon": "",
+    "type": "global",
+    "hasSettings": true,
+    "disabled": false
+  }
+]

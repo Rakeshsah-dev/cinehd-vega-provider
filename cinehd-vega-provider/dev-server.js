@@ -1,0 +1,20 @@
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+const app = express();
+const root = __dirname;
+const port = Number(process.env.PORT || 3001);
+app.use(cors({ origin: '*', methods: ['GET', 'OPTIONS'] }));
+app.use('/dist', express.static(path.join(root, 'dist')));
+app.get('/manifest.json', (_req, res) => res.sendFile(path.join(root, 'manifest.json')));
+app.get('/health', (_req, res) => res.json({ status: 'healthy' }));
+app.get('/status', (_req, res) => res.json({ status: 'running', providers: fs.existsSync(path.join(root, 'dist')) ? fs.readdirSync(path.join(root, 'dist')) : [] }));
+app.use((req, res) => res.status(404).json({ error: 'Not found', path: req.path }));
+app.listen(port, '0.0.0.0', () => {
+  let ip = 'localhost';
+  for (const group of Object.values(os.networkInterfaces())) for (const item of group || []) if (item.family === 'IPv4' && !item.internal) ip = item.address;
+  console.log(`CineHD provider server: http://localhost:${port}`);
+  console.log(`Mobile URL: http://${ip}:${port}`);
+});
